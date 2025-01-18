@@ -1,33 +1,29 @@
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
 
-# Функція обробки команди /start
-def start(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text("Привіт! Я твій простий Telegram-бот. Напиши мені щось!")
+# Обробник команди /start
+async def start(update: Update, context) -> None:
+    await update.message.reply_text("Привіт! Надішли мені повідомлення, і я повторю його.")
 
-# Функція обробки звичайних повідомлень
-def echo(update: Update, context: CallbackContext) -> None:
+# Обробник звичайних повідомлень
+async def echo(update: Update, context) -> None:
     user_message = update.message.text
-    update.message.reply_text(f"Ти написав: {user_message}")
+    await update.message.reply_text(f"Ти написав: {user_message}")
 
-# Основна функція
+# Основна функція запуску бота
 def main():
-    # Встав свій токен сюди
-    TOKEN = "7302913383:AAH8wW_QgxgBy4Ur7CWeiz6pOm_GJ3hOoEA"
+    TOKEN = "7302913383:AAH8wW_QgxgBy4Ur7CWeiz6pOm_GJ3hOoEA"  # Замініть на токен вашого бота
 
-    # Ініціалізуємо Updater
-    updater = Updater(TOKEN)
+    # Створення додатку
+    app = ApplicationBuilder().token(TOKEN).build()
 
-    # Додаємо обробники для команд і повідомлень
-    dispatcher = updater.dispatcher
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    # Додаємо обробники
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
     # Запускаємо бота
-    updater.start_polling()
-    print("Бот запущено. Натисни Ctrl+C для зупинки.")
-    updater.idle()
+    print("Бот запущено. Натисніть Ctrl+C для зупинки.")
+    app.run_polling()
 
 if __name__ == "__main__":
     main()
-
