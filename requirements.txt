@@ -1,0 +1,4 @@
+echo "python-telegram-bot==20.3" > requirements.txt
+git add requirements.txt
+git commit -m "Add requirements.txt"
+git push
